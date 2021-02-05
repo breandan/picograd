@@ -16,3 +16,9 @@ class Var:
     for input, val in self.grad_fn():
         input.grad(val * bp, dict)
     return dict
+
+x = Var(1.)
+y = Var(1.)
+f = x * x * x + y * y
+print(f.grad()[x])
+print(f.grad()[y])
