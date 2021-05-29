@@ -27,7 +27,8 @@ class Var:
 x = Var(1)
 y = Var(2)
 f = (x * x * 3 + y * y * y) * 2
-print(f.v)  # 9.0
 grads = f.grad(x, y)  # TODO: possible to support f.grad(x=1, y=2)?
-print(grads[x])  # 2.0
-print(grads[y])  # 12.0
+
+print(f.v)       # 22.0
+print(grads[x])  # 12.0
+print(grads[y])  # 24.0
