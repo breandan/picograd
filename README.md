@@ -1,6 +1,6 @@
 # picograd
 
-![](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/IC_Pyrrharctia_isabella_caterpillar.JPG/1280px-IC_Pyrrharctia_isabella_caterpillar.JPG)
+![](https://user-images.githubusercontent.com/175716/120076885-ca241100-c075-11eb-940a-87ac9e094efa.png)
 
 The tiniest possible autograd engine.
 
