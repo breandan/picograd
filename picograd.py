@@ -1,8 +1,9 @@
 from functools import reduce
 
+
 class Var:
   def __init__(self, val, grad_fn=lambda: []):
-    self.v, self.grad_fn = val, grad_fn
+    self.v, self.grad_fn, self.grads = val, grad_fn, self.grad(grad_fn=grad_fn)
 
   def __add__(self, other):
     return Var(val=self.v + other.v, grad_fn=lambda: [(self, 1.0), (other, 1.0)])
@@ -10,15 +11,16 @@ class Var:
   def __mul__(self, other):
     return Var(val=self.v * other.v, grad_fn=lambda: [(self, other.v), (other, self.v)])
 
-  # TODO: Can we turn this into self.grad = ...?
-  def grad(self, bp=1.0):
-    grads = [input.grad(bp=val * bp) for (input, val) in self.grad_fn()]
-    merge = lambda a, b: {k: a.get(k, 0) + b.get(k, 0) for k in set(a) | set(b)}
-    return reduce(merge, grads, {self: bp})
+  def grad(self, *vars, grad_fn=lambda: [], bp=1.0):  # TODO: incrementalize?
+    return reduce(lambda a, b: {k: a.get(k, 0) + b.get(k, 0) for k in set(a) | set(b)},
+                  [input.grad(*vars, grad_fn=input.grad_fn, bp=val * bp) for (input, val) in grad_fn()],
+                  {self: bp}) if not vars else {v: self.grads[v] for v in vars}
+
 
 x = Var(1.)
 y = Var(2.)
 f = x * x + y * y * y
-print(f.v)
-print(f.grad()[x]) # TODO: Alternate syntax f.grad(x,y) -> Dict?
-print(f.grad()[y])
+print(f.v)  # 9.0
+grads = f.grad(x, y)
+print(grads[x])  # 2.0
+print(grads[y])  # 12.0
