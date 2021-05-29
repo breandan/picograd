@@ -1,16 +1,20 @@
 from __future__ import annotations
+
 from functools import reduce
+from typing import Union
 
 
 class Var:
-  def __init__(self, val: float, grad_fn: callable = lambda: []):
+  def __init__(self, val: float, grad_fn: callable[[], List[Tuple[Var, float]]] = lambda: []):
     self.v, self.grad_fn = val, grad_fn
     self.grads = self.grad()
 
-  def __add__(self, other: Var) -> Var:
+  def __add__(self, val: Union[Var, int]) -> Var:
+    other = Var(val) if type(val) is float else val
     return Var(val=self.v + other.v, grad_fn=lambda: [(self, 1.0), (other, 1.0)])
 
-  def __mul__(self, other: Var) -> Var:
+  def __mul__(self, val: Union[Var, int]) -> Var:
+    other = Var(val) if type(val) is float else val
     return Var(val=self.v * other.v, grad_fn=lambda: [(self, other.v), (other, self.v)])
 
   def grad(self, *vars: Var, bp: float = 1.0) -> dict[Var, float]:  # TODO: incrementalize?
@@ -21,7 +25,7 @@ class Var:
 
 x = Var(1.)
 y = Var(2.)
-f = x * x + y * y * y
+f = x * x + y * y * y * 1.0
 print(f.v)  # 9.0
 grads = f.grad(x, y)  # TODO: possible to support f.grad(x=1., y=2.)?
 print(grads[x])  # 2.0
