@@ -4,7 +4,7 @@ from functools import reduce
 from typing import Union, SupportsFloat
 
 
-class Var(SupportsFloat):
+class Var:
     def __init__(self, val: SupportsFloat, grad_fn: callable[[], List[Tuple[Var, float]]] = lambda: []):
         self.v, self.grad_fn = float(val), grad_fn
         self.grads = self.grad()
