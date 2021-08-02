@@ -5,7 +5,7 @@ from typing import Union, SupportsFloat
 
 
 class Var:
-    def __init__(self, val: SupportsFloat, grad_fn: callable[[], List[Tuple[Var, float]]] = lambda: []):
+    def __init__(self, val: SupportsFloat, grad_fn: callable[[], List[tuple[Var, float]]] = lambda: []):
         self.v, self.grad_fn = float(val), grad_fn
         self.grads = self.grad()
 
